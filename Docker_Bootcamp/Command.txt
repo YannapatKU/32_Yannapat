@@ -1,0 +1,26 @@
+docker -v
+docker run hello-world
+docker ps -all
+docker run busybox ping google.com
+docker stop ตามด้วย (id)
+docker create busybox ping google.com
+docker start id จากบรรทัดที่ 6
+docker ps
+docker system prune
+docker run nginx
+docker exec id ls
+docker exec -it id sh
+# ls
+ถ้าปิด #exit
+docker exec -it id bash          
+root@id:/# ls
+#exit
+docker rm(remove) id
+docker run -p 80:80 nginx
+docker run -d -p 7800:80 nginx  
+
+docker inflow
+docker system df
+docker images
+docker images rm hello-world
+docker image rm busybox
