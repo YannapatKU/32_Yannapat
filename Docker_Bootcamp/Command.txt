@@ -1,4 +1,6 @@
 docker -v
+docker-compose down ปิดและลบ
+docker-compose up -d รับแบบไม่ค้าง
 docker run hello-world
 docker ps -all
 docker run busybox ping google.com
@@ -6,7 +8,7 @@ docker stop ตามด้วย (id)
 docker create busybox ping google.com
 docker start id จากบรรทัดที่ 6
 docker ps
-docker system prune
+docker system prune ลบ Container
 docker run nginx
 docker exec id ls
 docker exec -it id sh
@@ -24,3 +26,34 @@ docker system df
 docker images
 docker images rm hello-world
 docker image rm busybox
+
+docker run --name mysql --network wordpress -e MYSQL_ROOT_PASSWORD=1111 -e MYSQL_DATABASE=wordpress_db -e MYSQL_USER=wordpress
+docker run --name pma --network wordpress -p 8888:80 -e PMA_ARBITRARY=1 -d phpmyadmin/phpmyadmin
+docker run -d --name wordpress --network wordpress -p 888:80 -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DB_USER=wordpress -e WORDPRESS_DB_PASSWORD=wordpress -e WORDPRESS_DB_NAME=wordpress_db wordpress
+
+#Join Network
+docker network connect wordpress mysql
+docker network connect wordpress pma
+
+#Show Network
+docker network inspect wordpress
+
+
+docker exec -it pma sh
+apt-get update
+apt-get install vim
+
+docker container inspect wordpress
+อยู่ volumes/var/www/html
+
+docker container inspect mysql
+อยู่ volumes/var/lib/mysql
+
+docker container inspect pma
+อยู่ volumes/var/lib/pma
+
+docker network create wordpress02
+
+docker run -d --name mysql02 --network wordpress02 -v mysql_volume:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=1111 -e MYSQL_DATABASE=wordpress02_db -e MYSQL_USER=wordpress -e MYSQL_PASSWORD=wordpress mysql:5.7
+docker run -d --name wordpress02 --network wordpress02 -v wp_volume:/var/www/html -e WORDPRESS_DB_HOST=mysql02 -e WORDPRESS_DB_USER=wordpress -e WORDPRESS_DB_PASSWORD=wordpress -e WORDPRESS_DB_NAME=wordpress02_db -p 889:80 wordpress
+docker run --name pma02 --network wordpress02 -p 8889:80 -e PMA_ARBITRARY=1 -d phpmyadmin/phpmyadmin
